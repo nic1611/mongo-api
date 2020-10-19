@@ -1,4 +1,6 @@
 using System;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver.GeoJsonObjectModel;
 
 namespace MongoApi.Collections
@@ -12,6 +14,9 @@ namespace MongoApi.Collections
             this.Localizacao = new GeoJson2DGeographicCoordinates(longitude, latitude);
         }
         
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string id { get; set; }
         public DateTime DataNascimento { get; set; }
         public string Sexo { get; set; }
         public GeoJson2DGeographicCoordinates Localizacao { get; set; }

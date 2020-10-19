@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoApi.Collections;
 using MongoApi.Dto;
-using MongoDB.Driver;
+using MongoApi.Interfaces;
 
 namespace MongoApi.Controllers
 {
@@ -9,13 +9,11 @@ namespace MongoApi.Controllers
     [Route("[controller]")]
     public class InfectadoController : ControllerBase
     {
-        Data.MongoDB _mongoDB;
-        IMongoCollection<InfectadoCollection> _infectadosCollection;
+        private readonly IInfectadoRepository _repo;
 
-        public InfectadoController(Data.MongoDB mongoDB)
+        public InfectadoController(IInfectadoRepository repo)
         {
-            _mongoDB = mongoDB;
-            _infectadosCollection = _mongoDB.DB.GetCollection<InfectadoCollection>(typeof(InfectadoCollection).Name.ToLower());
+            _repo = repo;
         }
 
         [HttpPost]
@@ -23,7 +21,7 @@ namespace MongoApi.Controllers
         {
             var infectado = new InfectadoCollection(dto.DataNascimento, dto.Sexo, dto.Latitude, dto.Longitude);
 
-            _infectadosCollection.InsertOne(infectado);
+            _repo.Create(infectado);
             
             return StatusCode(201, "Infectado adicionado com sucesso");
         }
@@ -31,7 +29,7 @@ namespace MongoApi.Controllers
         [HttpGet]
         public ActionResult ObterInfectados()
         {
-            var infectados = _infectadosCollection.Find(Builders<InfectadoCollection>.Filter.Empty).ToList();
+            var infectados = _repo.Get();
             
             return Ok(infectados);
         }

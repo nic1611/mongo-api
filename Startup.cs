@@ -10,6 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using MongoApi.Data;
+using MongoApi.Data.Repository;
+using MongoApi.Interfaces;
 
 namespace MongoApi
 {
@@ -25,7 +29,13 @@ namespace MongoApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<Data.MongoDB>();
+            services.Configure<InfectadoDataBaseSettings>(
+                Configuration.GetSection(nameof(InfectadoDataBaseSettings)));
+
+            services.AddSingleton<IInfectadoDataBaseSettings>(sp =>
+                sp.GetRequiredService<IOptions<InfectadoDataBaseSettings>>().Value);
+                
+            services.AddScoped<IInfectadoRepository, InfectadoRepository>();
 
             services.AddControllers();
         }
