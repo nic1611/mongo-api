@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Extensions.Configuration;
+using MongoApi.Collections;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
@@ -30,9 +31,9 @@ namespace MongoApi.Data
             var conventionPack = new ConventionPack { new CamelCaseElementNameConvention() };
             ConventionRegistry.Register("camelCase", conventionPack, t => true);
 
-            if (!BsonClassMap.IsClassMapRegistered(typeof(Infectado)))
+            if (!BsonClassMap.IsClassMapRegistered(typeof(InfectadoCollection)))
             {
-                BsonClassMap.RegisterClassMap<Infectado>(i =>
+                BsonClassMap.RegisterClassMap<InfectadoCollection>(i =>
                 {
                     i.AutoMap();
                     i.SetIgnoreExtraElements(true);
